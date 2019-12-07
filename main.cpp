@@ -361,8 +361,8 @@ void initializeApplication(void)
 	for (unsigned int k = 0; k<MAX_NUM_TRAVELER_THREADS; k++){
 		int errorCode = pthread_create(&travelList[k].threadID, nullptr, runTravelerThread, travelList+k);
 		if (errorCode != 0){
-            cerr << "could not pthread_create thread " << k <<
-					 ", Error code " << errorCode << ": " << strerror(errorCode) << endl;
+            // cerr << "could not pthread_create thread " << k <<
+			// 		 ", Error code " << errorCode << ": " << strerror(errorCode) << endl;
             exit (EXIT_FAILURE);
         }
 
@@ -378,8 +378,8 @@ void initializeApplication(void)
     for (unsigned int k = 0; k<NUM_PRODUCER_THREADS; k++){
         int errorCode = pthread_create(&producerList[k].threadID, nullptr, produceInkThread, producerList+k);
         if (errorCode != 0){
-            cerr << "could not pthread_create thread " << k <<
-            ", Error code " << errorCode << ": " << strerror(errorCode) << endl;
+            // cerr << "could not pthread_create thread " << k <<
+            // ", Error code " << errorCode << ": " << strerror(errorCode) << endl;
             exit (EXIT_FAILURE);
         }
      }
@@ -394,7 +394,6 @@ void initializeApplication(void)
 void* runTravelerThread(void* data){
     TravelerInfo* tt = static_cast<TravelerInfo*>(data);
 						//dynamic, const, reinterpret
-	printf("here 1, and isLive=%d\n", tt->isLive);
 	fflush(stdout);
 	tt->dir = generateDirection(tt->col, tt->row, tt->dir);
     while (tt->isLive){
