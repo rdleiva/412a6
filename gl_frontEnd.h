@@ -8,6 +8,7 @@
 
 #ifndef GL_FRONT_END_H
 #define GL_FRONT_END_H
+#include <pthread.h>
 
 
 //------------------------------------------------------------------------------
@@ -42,24 +43,34 @@
 //	you get the opposite directions from dir as (NUM_TRAVEL_DIRECTIONS - dir)
 //	you get left turn from dir as (dir + 1) % NUM_TRAVEL_DIRECTIONS
 typedef enum TravelDirection {
-								NORTH = 0,
+								SOUTH = 0,
 								WEST,
-								SOUTH,
+								NORTH,
 								EAST,
 								//
 								NUM_TRAVEL_DIRECTIONS
 } TravelDirection;
 
 //	The 
-typedef enum TravelerType {
+using TravelerType = enum {
 								RED_TRAV = 0,
 								GREEN_TRAV,
 								BLUE_TRAV,
 								//
 								NUM_TRAV_TYPES
-} TravelerType;
+};
+using ProducerType = TravelerType;
 
 //	Traveler info data type
+/** Traveler info struct
+ *  @var type       type of traveler
+ *  @var row        row location of traveler
+ *  @var col        col location of traveler
+ *  @var isLive     thread is live bool
+ *  @var distance   distance travel for traveler
+ *  @var index      index of traveler
+ *  @var threadID   thread id of traveler
+ */
 typedef struct TravelerInfo {
 								TravelerType type;
 								//	location of the traveler
@@ -69,8 +80,22 @@ typedef struct TravelerInfo {
 								TravelDirection dir;
 								// initialized to 1, set to 0 if terminates
 								int isLive;
+								int distance;
+
+								unsigned int index;
+								pthread_t threadID;
+//                                pthread_mutex_t* thread_lock;
 } TravelerInfo;
 
+
+/** Producer struct
+ *  @var type       type of producer
+ *  @var threadID   pthread_t thread id
+ */
+typedef struct Producer {
+    ProducerType type;
+    pthread_t threadID;
+}Producer;
 
 //-----------------------------------------------------------------------------
 //	Function prototypes
@@ -80,6 +105,8 @@ void drawGrid(int**grid, int numRows, int numCols);
 void drawGridAndTravelers(int**grid, int numRows, int numCols, TravelerInfo *travelList);
 void drawState(int numLiveThreads, int redLevel, int greenLevel, int blueLevel);
 void initializeFrontEnd(int argc, char** argv, void (*gridCB)(void), void (*stateCB)(void));
+void speedupProducers(void);
+void slowdownProducers(void);
 
 #endif // GL_FRONT_END_H
 

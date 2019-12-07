@@ -1,0 +1,6 @@
+#!/bin/bash
+clang -std=c++11 main.cpp  gl_frontEnd.cpp -lm -lstdc++ -framework OpenGl -framework GLUT -lpthread -o travel
+# g++ main.cpp gl_frontEnd.cpp -o test
+# g++ hello.cpp -o hello
+
+./travel

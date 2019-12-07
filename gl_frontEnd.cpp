@@ -60,8 +60,8 @@ enum FirstSubmenuItemID {	FIRST_SUBMENU_ITEM = 11,
 
 #define SMALL_DISPLAY_FONT    GLUT_BITMAP_HELVETICA_12
 #define LARGE_DISPLAY_FONT    GLUT_BITMAP_HELVETICA_18
-const int SMALL_FONT_HEIGHT = 12;
-const int LARGE_FONT_HEIGHT = 18;
+//const int SMALL_FONT_HEIGHT = 12;
+//const int LARGE_FONT_HEIGHT = 18;
 const int TEXT_PADDING = 0;
 const float kTextColor[4] = {1.f, 1.f, 1.f, 1.f};
 
@@ -97,6 +97,7 @@ const int WINDOW_HEIGHT = 600;
 
 void (*gridDisplayFunc)(void);
 void (*stateDisplayFunc)(void);
+void myTimerFunc(int value);
 
 //	We use a window split into two panes/subwindows.  The subwindows
 //	will be accessed by an index.
@@ -506,6 +507,16 @@ void myKeyboard(unsigned char c, int x, int y)
 			ok = refillBlueInk(MAX_ADD_INK);
 			break;
 
+        //  speed up producers
+        case '.':
+            speedupProducers();
+            break;
+            
+        //  slow down producers
+        case ',':
+            slowdownProducers();
+            break;
+            
 		default:
 			ok = 1;
 			break;
@@ -567,7 +578,7 @@ void initializeFrontEnd(int argc, char** argv, void (*gridDisplayCB)(void),
 	glutDisplayFunc(myDisplay);
 	glutReshapeFunc(myResize);
 	glutMouseFunc(myMouse);
-    glutIdleFunc(myIdle);
+    glutTimerFunc(20, myTimerFunc, 0);
 	
 	gridDisplayFunc = gridDisplayCB;
 	stateDisplayFunc = stateDisplayCB;
@@ -598,4 +609,14 @@ void initializeFrontEnd(int argc, char** argv, void (*gridDisplayCB)(void),
 	glutKeyboardFunc(myKeyboard);
 	glutMouseFunc(myGridPaneMouse);
 	glutDisplayFunc(stateDisplayCB);
+}
+
+void myTimerFunc(int value)
+{
+    //  possibly I do something to update the scene
+
+    //    And finally I perform the rendering
+    glutSetWindow(gMainWindow);
+    myDisplay();
+    glutTimerFunc(20, myTimerFunc, 0);  // forces the function to get called back 20ms later
 }
